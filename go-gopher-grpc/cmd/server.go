@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,16 +17,11 @@ package cmd
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"log"
-	"net"
-	"net/http"
-	"strings"
-
 	"github.com/spf13/cobra"
 	"golang.org/x/xerrors"
+	"log"
+	"net"
 
 	pb "github.com/scraly/learning-go-by-examples/go-gopher-grpc/pkg/gopher"
 	"google.golang.org/grpc"
@@ -87,39 +82,7 @@ func (s *Server) GetGopher(ctx context.Context, req *pb.GopherRequest) (*pb.Goph
 
 	log.Printf("Received: %v", req.GetName())
 
-	//Call KuteGo API in order to get Gopher's URL
-	// https://kutego-api-xxxxx-ew.a.run.app/gophers?name=back-to-the-future
-	// [{"name":"back-to-the-future","path":"back-to-the-future.png","url":"https://raw.githubusercontent.com/scraly/gophers/main/back-to-the-future.png"}]
-	response, err := http.Get(KuteGoAPIURL + "/gophers?name=" + req.GetName())
-	if err != nil {
-		log.Fatalf("failed to call KuteGoAPI: %v", err)
-	}
-	defer response.Body.Close()
-
-	if response.StatusCode == 200 {
-		// Transform our response to a []byte
-		body, err := ioutil.ReadAll(response.Body)
-		if err != nil {
-			log.Fatalf("failed to read response body: %v", err)
-		}
-
-		// Put only needed informations of the JSON document in our array of Gopher
-		var data []Gopher
-		err = json.Unmarshal(body, &data)
-		if err != nil {
-			log.Fatalf("failed to unmarshal JSON: %v", err)
-		}
-
-		// Create a string with all of the Gopher's name and a blank line as separator
-		var gophers strings.Builder
-		for _, gopher := range data {
-			gophers.WriteString(gopher.URL + "\n")
-		}
-
-		res.Message = gophers.String()
-	} else {
-		log.Fatal("Can't get the Gopher :-(")
-	}
+	fmt.Println()
 
 	return res, nil
 }

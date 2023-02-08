@@ -9,9 +9,19 @@ service Gopher {
   rpc GetGopher (GopherRequest) returns (GopherReply) {}
 }
 
+message object {
+  string str = 1;
+  int64 number = 2;
+  double floating = 3;
+}
+
 // The request message containing the user's name.
 message GopherRequest {
   string name = 1;
+  string data1 = 2;
+  int64 data2  = 3;
+  double data3 = 4;
+  object object = 5;
 }
 
 // The response message containing the greetings
