@@ -6,7 +6,7 @@ option go_package = "github.com/scraly/learning-by-examples/go-gopher-grpc";
 // The gopher service definition.
 service Gopher {
   // Get Gopher URL
-  rpc GetGopher (GopherRequest) returns (GopherReply) {}
+  rpc GetGopher (GopherRequest) returns (GopherRequest) {}
 }
 
 message object {

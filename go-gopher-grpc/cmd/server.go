@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"golang.org/x/xerrors"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 
@@ -53,6 +54,8 @@ var serverCmd = &cobra.Command{
 		}
 
 		grpcServer := grpc.NewServer()
+		// Register reflection service on gRPC server.
+		reflection.Register(grpcServer)
 
 		// Register services
 		pb.RegisterGopherServer(grpcServer, &Server{})
@@ -66,25 +69,17 @@ var serverCmd = &cobra.Command{
 }
 
 // GetGopher implements gopher.GopherServer
-func (s *Server) GetGopher(ctx context.Context, req *pb.GopherRequest) (*pb.GopherReply, error) {
-	res := &pb.GopherReply{}
+func (s *Server) GetGopher(ctx context.Context, req *pb.GopherRequest) (*pb.GopherRequest, error) {
 
 	// Check request
 	if req == nil {
 		fmt.Println("request must not be nil")
-		return res, xerrors.Errorf("request must not be nil")
+		return req, xerrors.Errorf("request must not be nil")
 	}
 
-	if req.Name == "" {
-		fmt.Println("name must not be empty in the request")
-		return res, xerrors.Errorf("name must not be empty in the request")
-	}
+	log.Printf("Received: %+v", req)
 
-	log.Printf("Received: %v", req.GetName())
-
-	fmt.Println()
-
-	return res, nil
+	return req, nil
 }
 
 func init() {
